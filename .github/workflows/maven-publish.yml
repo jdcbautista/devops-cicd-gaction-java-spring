@@ -48,10 +48,6 @@ jobs:
     - name: Destroy previous Elastic Beanstalk
       run: |
         aws elasticbeanstalk delete-application-version --application-name $AWS_EB_APP_NAME --version-label $AWS_EB_APP_VERSION
-    - name: Terminate previous Elastic Beanstalk Environment
-      if: ${{ env.env_exists == 'true' }}
-      run: |
-        aws elasticbeanstalk terminate-environment --environment-name $AWS_EB_ENVIRONMENT
     - name: Deploy to Elastic Beanstalk
       run: |
         aws elasticbeanstalk create-application-version --application-name $AWS_EB_APP_NAME --version-label $AWS_EB_APP_VERSION --source-bundle S3Bucket=$AWS_S3_BUCKET,S3Key=$ARTIFACT_NAME
