@@ -35,6 +35,16 @@ jobs:
       run: |
         aws configure set region us-east-1
         aws s3 cp ./target/**.jar s3://$AWS_S3_BUCKET/$ARTIFACT_NAME
+    - name: Check if Environment Exists
+      run: |
+        exists=$(aws elasticbeanstalk describe-environments --environment-names $AWS_EB_ENVIRONMENT --query "Environments[0].EnvironmentName" --output text)
+        if [ -n "$exists" ]; then
+          echo "Environment $AWS_EB_ENVIRONMENT exists."
+          env_exists=true
+        else
+          echo "Environment $AWS_EB_ENVIRONMENT does not exist."
+          env_exists=false
+        fi
     - name: Destroy previous Elastic Beanstalk
       run: |
         aws elasticbeanstalk delete-application-version --application-name $AWS_EB_APP_NAME --version-label $AWS_EB_APP_VERSION
